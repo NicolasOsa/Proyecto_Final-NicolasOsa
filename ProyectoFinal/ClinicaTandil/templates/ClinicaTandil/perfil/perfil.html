@@ -1,0 +1,15 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block contenidoQueCambia %}
+    <div>
+        <ul>
+            <li>{{user.username}}</li>
+            <li>{{user.email}}</li>
+            <li>{{user.first_name}}</li>
+            <li>{{user.last_name}}</li>
+        </ul>
+        <a href="/ClinicaTandil/perfil/editarPerfil" class="btn btn-success" style="text-decoration: none; color: white;"> Editar Perfil</a>
+        <a href="/ClinicaTandil/perfil/changeAvatar" class="btn btn-success" style="text-decoration: none; color: white;"> Avatar</a>
+    </div>
+{% endblock %}

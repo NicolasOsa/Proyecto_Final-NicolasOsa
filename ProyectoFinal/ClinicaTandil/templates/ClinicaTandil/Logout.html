@@ -1,0 +1,12 @@
+<div>
+    {% extends "ClinicaTandil/base.html" %}
+    {% load static %}
+    
+        {% block contenidoQueCambia %}
+            <h1>Logout</h1>
+            <h4>Has cerrado sesión</h4>
+            <div >
+                <p>Quieres <a href="{% url 'login' %}">iniciar sesión </a>de nuevo?</p>
+            </div>
+        {% endblock %}
+</div>
