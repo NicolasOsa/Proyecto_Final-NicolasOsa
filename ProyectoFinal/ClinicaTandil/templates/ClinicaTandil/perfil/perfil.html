@@ -8,8 +8,10 @@
             <li>{{user.email}}</li>
             <li>{{user.first_name}}</li>
             <li>{{user.last_name}}</li>
+            <li> <img src="{{user.avatar.imagen.url}}" alt=""></li>
+            <li>{{user.avatar.ROL}}</li>
         </ul>
-        <a href="/ClinicaTandil/perfil/editarPerfil" class="btn btn-success" style="text-decoration: none; color: white;"> Editar Perfil</a>
-        <a href="/ClinicaTandil/perfil/changeAvatar" class="btn btn-success" style="text-decoration: none; color: white;"> Avatar</a>
+        <a href="editarPerfil" class="btn btn-success" style="text-decoration: none; color: white;"> Editar Perfil</a>
+        <a href="avatar" class="btn btn-success" style="text-decoration: none; color: white;"> Avatar</a>
     </div>
 {% endblock %}

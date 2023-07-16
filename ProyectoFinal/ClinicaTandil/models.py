@@ -1,14 +1,22 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.utils import timezone
 # Create your models here.
 
 
-class User(AbstractUser):
-    es_paciente = models.BooleanField(default=False)
-    es_medico = models.BooleanField(default=False)
-    es_secretaria = models.BooleanField(default=False)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+class Avatar(models.Model):
+
+    OPCIONES = (
+        ('Paciente', 'Paciente'),
+        ('Medico', 'Medico'),
+        ('Secretario', 'Secretario'),
+        # Agrega aquí todas las opciones de refrigerantes que necesites
+    )
+
+    ROL = models.CharField(max_length=20, choices=OPCIONES)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
 class Paciente(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)

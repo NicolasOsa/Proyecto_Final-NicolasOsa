@@ -56,7 +56,7 @@ def registro(request):
         if userCreate.is_valid():
             user = userCreate.save()
             login(request, user)
-            return render(request, 'ClinicaTandil/login.html')
+            return redirect('Home')
     else:
         userCreate = UserCreationForm()
         return render(request, 'ClinicaTandil/registro.html', {'form': userCreate})
@@ -78,38 +78,19 @@ def editarPerfil(request):
             user_basic_info.first_name = form.cleaned_data.get('first_name')
             user_basic_info.last_name = form.cleaned_data.get('last_name')
             user_basic_info.save()
-            return render(request, 'ClinicaTandil/perfil/perfil.html')
+            return redirect('perfil')
     else:
         form = UserEditForm(initial= {'username': usuario.username, 'email': usuario.email, 'first_name': usuario.first_name, 'last_name': usuario.last_name })
-        return render(request, 'ClinicaTandil/perfil/perfil.html', {"form": form})
+        return render(request, 'ClinicaTandil/perfil/editarPerfil.html', {"form": form})
 
 
-#def editAvatar(request):
-#    if request.method == 'POST':
-#        form = AvatarForm(request.POST, request.FILES)
-#        print(form)
-#        print(form.is_valid())
-#        if form.is_valid():
-#            user = request.user
-#            user.avatar = form.cleaned_data['avatar']
-#            user.save()
-#            avatar = user.avatar.url
-#            try:
-#                avatar = avatar[0].image.url
-#            except:
-#                avatar = None           
-#            return render(request, 'ClinicaTandil/home.html', {'avatar': avatar})
-#    else:
-#        try:
-#            form = AvatarForm()
-#        except:
-#            form = AvatarForm()
-#    return render(request, 'ClinicaTandil/home.html', {'form': form})
-#
-#def getavatar(request):
-#    avatar = avatar.objects.filter(user = request.user.id)
-#    try:
-#        avatar = avatar[0].image.url
-#    except:
-#        avatar = None
-#    return avatar
+def crear_avatar(request):
+    if request.method == 'POST':
+        form = AvatarForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save(request.user)  # Pasamos el usuario actual al formulario
+            return redirect('Home')  # Cambia 'ruta_exitosa' a la URL a la que deseas redirigir después de guardar la información
+    else:
+        form = AvatarForm()
+
+    return render(request, 'ClinicaTandil/perfil/avatar.html', {'form': form})

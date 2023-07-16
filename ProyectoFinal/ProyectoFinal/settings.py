@@ -128,8 +128,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Log in
 LOGIN_URL = '/ClinicaTandil/login'
 
-# usuarios
-AUTH_USER_MODEL = 'ClinicaTandil.User'
 
 # Avatar
 MEDIA_URL = '/media/'
