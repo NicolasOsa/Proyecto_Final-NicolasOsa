@@ -1,13 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
 from django.contrib.auth.models import User
-from .models import Avatar
 
 
-class AvatarForm(forms.ModelForm):
-    class Meta:
-        model = Avatar
-        fields = '__all__'
+
 
 class formContacto(forms.Form):
     nombre = forms.CharField(max_length=30)
@@ -39,4 +35,11 @@ class ChangePasswordForm(PasswordChangeForm):
         help_texts = {k:"" for k in fields}
 
 
-    
+class AvatarForm(forms.Form):
+    avatar = forms.ImageField()
+
+
+#class PesonalForm(forms.ModelForm):
+#    class Meta:
+#        model = Avatar
+#        fields = '__all__'

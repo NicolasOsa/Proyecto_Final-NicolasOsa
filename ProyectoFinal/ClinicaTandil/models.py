@@ -5,17 +5,7 @@ from django.utils import timezone
 
 
 class Avatar(models.Model):
-
-    OPCIONES = (
-        ('Paciente', 'Paciente'),
-        ('Medico', 'Medico'),
-        ('Secretario', 'Secretario'),
-        # Agrega aquí todas las opciones de refrigerantes que necesites
-    )
-
-    ROL = models.CharField(max_length=20, choices=OPCIONES)
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     imagen = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
 class Paciente(models.Model):
@@ -58,3 +48,13 @@ class Diagnostico(models.Model):
     def __str__(self):
         return f"{self.paciente.usuario.first_name}, {self.paciente.usuario.last_name} - {self.fecha}"
 
+class Personal(models.Model):
+    OPCIONES = (
+        ('Paciente', 'Paciente'),
+        ('Medico', 'Medico'),
+        ('Secretario', 'Secretario'),
+        # Agrega aquí todas las opciones de refrigerantes que necesites
+    )
+
+    ROL = models.CharField(max_length=20, choices=OPCIONES)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -1,21 +1,19 @@
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from ClinicaTandil.models import Mensaje
-from ClinicaTandil.forms import AvatarForm, UserEditForm
-from django.contrib.auth.models import AbstractUser
+from ClinicaTandil.models import Mensaje, Avatar
+from ClinicaTandil.forms import AvatarForm, UserEditForm, ChangePasswordForm
 from .models import User
 from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm
 
-
-User = get_user_model()
 
 # Create your views here.
 
 def base(request):
-    #avatar = getavatar(request)
-    return render(request, "ClinicaTandil/base.html")
+    avatar = getavatar(request)
+    return render(request, "ClinicaTandil/base.html", {"avatar": avatar})
 
 def home(request):
     return render(request, "ClinicaTandil/home.html")
@@ -63,7 +61,7 @@ def registro(request):
 
 @login_required
 def perfilview(request):
-    return render(request, 'ClinicaTandil/perfil/perfil.html')
+    return render(request, 'ClinicaTandil/perfil/perfil.html',  {'user': request.user})
 
 
 @login_required  
@@ -84,13 +82,63 @@ def editarPerfil(request):
         return render(request, 'ClinicaTandil/perfil/editarPerfil.html', {"form": form})
 
 
+
 def crear_avatar(request):
     if request.method == 'POST':
         form = AvatarForm(request.POST, request.FILES)
+        print(form)
+        print(form.is_valid())
         if form.is_valid():
-            form.save(request.user)  # Pasamos el usuario actual al formulario
-            return redirect('Home')  # Cambia 'ruta_exitosa' a la URL a la que deseas redirigir después de guardar la información
+            user = User.objects.get(username = request.user)
+            avatar = Avatar(user = user, imagen = form.cleaned_data['avatar'], id = request.user.id)
+            avatar.save()
+            avatar = Avatar.objects.filter(user = request.user.id)
+            try:
+                avatar = avatar[0].imagen.url
+            except:
+                avatar = None           
+            return render(request, "ClinicaTandil/base.html", {'avatar': avatar})
     else:
-        form = AvatarForm()
+        try:
+            avatar = Avatar.objects.filter(user = request.user.id)
+            form = AvatarForm()
+        except:
+            form = AvatarForm()
+    return render(request, "ClinicaTandil/perfil/avatar.html", {'form': form})
 
-    return render(request, 'ClinicaTandil/perfil/avatar.html', {'form': form})
+def getavatar(request):
+    avatar = Avatar.objects.filter(user = request.user.id)
+    try:
+        avatar = avatar[0].image.url
+    except:
+        avatar = None
+    return avatar
+
+
+@login_required
+def changePassword(request):
+    usuario = request.user    
+    if request.method == "POST":
+        form = ChangePasswordForm(data = request.POST, user = usuario)
+        if form.is_valid():
+            if request.POST['new_password1'] == request.POST['new_password2']:
+                user = form.save()
+                update_session_auth_hash(request, user)
+            return HttpResponse("Las constraseñas no coinciden")
+        return render(request, "ClinicaTandil/base.html")
+    else:
+        form = ChangePasswordForm(user = usuario)
+        return render(request, 'ClinicaTandil/perfil/changePassword.html', {"form": form})
+
+
+
+#def crear_avatar(request):
+#    if request.method == 'POST':
+#        form = AvatarForm(request.POST, request.FILES)
+#        if form.is_valid():
+#            form.save(request.user)  # Pasamos el usuario actual al formulario
+#            return redirect('Home')  # Cambia 'ruta_exitosa' a la URL a la que deseas redirigir después de guardar la información
+#    else:
+#        form = AvatarForm()
+#
+#    return render(request, 'ClinicaTandil/perfil/avatar.html', {'form': form})
