@@ -5,22 +5,24 @@
         {% block contenidoQueCambia %}
             <h1>Contacto</h1>
             <h4>Dejanos tu consulta</h4>
-            <div class="formContacto">
+            <div>
                 <form action="/ClinicaTandil/contacto/" method="POST"> {% csrf_token %}
-                    <div>
-                        <input placeholder="Nombre" type = "text" name="nombre" required>
+                    <div class="form-group">
+                        <input class="form-control anchoFormContacto" placeholder="Nombre" type = "text" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control anchoFormContacto" placeholder="Apellido" type = "text" name="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control anchoFormContacto" placeholder="Email" type = "email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control anchoFormContacto" placeholder="Mensaje" type = "text" name="mensaje" rows="8" required></textarea>
                     </div>
                     <div>
-                        <input placeholder="Apellido" type = "text" name="apellido" required>
+                        <input class="btn btn-primary anchoFormContacto" type="submit" value="Enviar">
                     </div>
-                    <div>
-                        <input placeholder="Email" type = "email" name="email" required>
-                    </div>
-                    <div>
-                        <input placeholder="Mensaje" type = "text" name="mensaje" required>
-                    </div>
-                
-                    <input class="btn btn-primary" type="submit" value="Enviar">
+                    
                 </form>
             </div>
         {% endblock %}

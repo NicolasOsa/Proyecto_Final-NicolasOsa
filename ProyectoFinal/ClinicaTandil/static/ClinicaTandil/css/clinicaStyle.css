@@ -12,9 +12,40 @@
     height: 100vh;
 }
 
-.fondoHome{
-    background-color: blue;
-   
+.parrafoHome{
+    width: 50%; 
+    margin-top: 100px;
+    margin-left: 5%;
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: "Arial", sans-serif;
+}
+
+.anchoFormContacto {
+    width: 60%;
+    margin-top: 1%;
+    margin-left: 3%;
+}
+
+.containerForm{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    position: absolute !important;
+    height: 100% !important;
+    width: 100% !important;
+    background-image: url("../assets/FondoHome.jpg");
+}
+
+.formLogin{
+    font-weight: bold;
+    background: linear-gradient(45deg, rgb(213, 213, 224) 0%, rgb(49, 109, 221) 100%);
+    padding: 40px 20px 20px 20px;
+    border-radius: 5px;
+    width: 350px;
+    height: 400px;
+
 }
 
 #tituloTablaPlantilla th{

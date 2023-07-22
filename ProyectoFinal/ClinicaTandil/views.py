@@ -111,7 +111,7 @@ def crear_avatar(request):
 def getavatar(request):
     avatar = Avatar.objects.filter(user = request.user.id)
     try:
-        avatar = avatar[0].image.url
+        avatar = avatar[0].imagen.url
     except:
         avatar = None
     return avatar
