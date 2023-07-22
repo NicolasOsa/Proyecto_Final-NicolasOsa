@@ -3,16 +3,22 @@
     {% load static %}
     
         {% block contenidoQueCambia %}
-        <div class="componenteEntregables">
-            <p>Hola soy un PACIENTES</p>
-            <div class="card" style="width: 18rem;">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-        </div>
+            <p>Pacientes de la clinica</p>
+            <table id="tableInfoPacientes">
+                <tr id="tituloTablaPacientes">
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo</th>
+                    
+                </tr>
+
+                    {% for paciente in Pacientes %}
+                        <tr>
+                            <td>{{paciente.usuario.first_name}}</td>
+                            <td>{{paciente.usuario.last_name}}</td>
+                            <td>{{paciente.usuario.email}}</td>
+                            
+                        </tr>
+                {% endfor %}  
         {% endblock %}
 </div>

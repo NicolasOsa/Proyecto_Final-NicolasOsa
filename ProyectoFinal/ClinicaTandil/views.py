@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from ClinicaTandil.models import Mensaje, Avatar
+from ClinicaTandil.models import Mensaje, Avatar, Paciente, Medico
 from ClinicaTandil.forms import AvatarForm, UserEditForm, ChangePasswordForm
 from .models import User
 from django.contrib.auth.decorators import login_required
@@ -22,10 +22,12 @@ def turnos(request):
     return render(request, "ClinicaTandil/turnos.html")
 
 def plantilla(request):
-    return render(request, "ClinicaTandil/plantilla.html")
+    Medicos = Medico.objects.all()
+    return render(request, "ClinicaTandil/plantilla.html", {"Medicos": Medicos})
 
 def pacientes(request):
-    return render(request, "ClinicaTandil/pacientes.html")
+    Pacientes = Paciente.objects.all()
+    return render(request, "ClinicaTandil/pacientes.html", {"Pacientes": Pacientes})
 
 def contacto(request):
     if request.method =='POST':

@@ -3,16 +3,21 @@
     {% load static %}
     
         {% block contenidoQueCambia %}
-        <div class="componenteEntregables">
-            <p>Hola soy un PLANTILLA</p>
-            <div class="card" style="width: 18rem;">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-        </div>
+            <p>Pacientes de la clinica</p>
+            <table id="tableInfoPlantilla">
+                <tr id="tituloTablaPlantilla">
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Especialidad</th>
+                    
+                </tr>
+
+                    {% for medico in Medicos %}
+                        <tr>
+                            <td>{{medico.usuario.first_name}}</td>
+                            <td>{{medico.usuario.last_name}}</td>
+                            <td>{{medico.especialidad}}</td>
+                        </tr>
+                {% endfor %}  
         {% endblock %}
 </div>

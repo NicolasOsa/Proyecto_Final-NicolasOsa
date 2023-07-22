@@ -5,4 +5,30 @@
 .contenido{
     margin-top: 100px !important;
     padding: 20px;
+    background-image: url("../assets/FondoHome.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+}
+
+.fondoHome{
+    background-color: blue;
+   
+}
+
+#tituloTablaPlantilla th{
+    padding: 10px;
+}
+
+#tableInfoPlantilla tr th{
+    padding-right: 120px;
+}
+
+#tituloTablaPacientes th{
+    padding: 10px;
+}
+
+#tableInfoPacientes tr th{
+    padding-right: 120px;
 }
