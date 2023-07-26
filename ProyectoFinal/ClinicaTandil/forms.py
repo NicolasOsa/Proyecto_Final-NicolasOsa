@@ -3,8 +3,6 @@ from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
 from django.contrib.auth.models import User
 
 
-
-
 class formContacto(forms.Form):
     nombre = forms.CharField(max_length=30)
     apellido = forms.CharField(max_length=30)
@@ -39,7 +37,6 @@ class AvatarForm(forms.Form):
     avatar = forms.ImageField()
 
 
-#class PesonalForm(forms.ModelForm):
-#    class Meta:
-#        model = Avatar
-#        fields = '__all__'
+class formDiagnostico(forms.Form):
+    diagnostico = forms.CharField(max_length=500)
+

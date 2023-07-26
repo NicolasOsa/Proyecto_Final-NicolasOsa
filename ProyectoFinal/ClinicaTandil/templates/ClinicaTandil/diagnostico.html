@@ -1,0 +1,30 @@
+<div>
+    {% extends "ClinicaTandil/base.html" %}
+    {% load static %}
+    
+        {% block contenidoQueCambia %}
+            <h1>Historia clinica del paciente {{el_paciente.usuario.first_name}} {{el_paciente.usuario.last_name}}</h1>
+            <table id="tableInfoPacientes">
+                <tr id="tituloTablaPacientes">
+                    <th>Fecha</th>
+                    <th>Medico</th>
+                    <th>Especialidad</th>
+                    <th>Diagnostico</th>
+                </tr>
+
+                    {% for diagnostico in Diagnosticos %}
+                        <tr>
+                            <td>{{diagnostico.fecha}}</td>
+                            <td>{{diagnostico.medico.usuario.first_name}} {{diagnostico.medico.usuario.last_name}}</td>
+                            <td>{{diagnostico.medico.especialidad}} </td>
+                            <td>{{diagnostico.diagnostico}}</td>
+                        </tr>
+                    {% endfor %} 
+            </table> 
+            <button class="btn btn-primary btnVer"><a href="{% url 'agregar_diagnostico' el_paciente.usuario.id %}">Agregar Diagnostico</a></button>
+            <div class="formDiagnostico">
+                {% block agregar_diagnostico %}
+                {% endblock %}
+            </div>          
+        {% endblock %}
+</div>

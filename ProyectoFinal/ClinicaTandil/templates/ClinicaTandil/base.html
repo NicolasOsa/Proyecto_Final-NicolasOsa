@@ -24,9 +24,13 @@
                     <li class="nav-item"><a class="nav-link navText" href="{% url 'Home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link navText" href="{% url 'Turnos' %}">Turnos</a></li>
                     <li class="nav-item"><a class="nav-link navText" href="{% url 'Plantilla' %}">Plantilla</a></li>
-                    <li class="nav-item"><a class="nav-link navText" href="{% url 'Pacientes' %}">Pacientes</a></li>
+                    {% if es_medico %}
+                        <li class="nav-item"><a class="nav-link navText" href="{% url 'Pacientes' %}">Pacientes</a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link navText" href="{% url 'Contacto' %}">Contacto</a></li> 
-                    <li class="nav-item"><a class="nav-link navText" href=""><img src="{{avatar}}" width="40px" alt="perfil"></a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link navText" href=""><img src="{{avatar}}" width="40px" alt="perfil"></a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link navText" href="{% url 'perfil' %}">{{user.username}}</a></li>
                     <li class="nav-item"><a class="nav-link navText" href="{% url 'Logout' %}">Logout</a></li>
                 </ul>

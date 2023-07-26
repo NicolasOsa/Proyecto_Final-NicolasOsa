@@ -63,3 +63,9 @@
 #tableInfoPacientes tr th{
     padding-right: 120px;
 }
+
+.btnVer{
+    border-radius: 15px;
+    color: white;
+    text-decoration: none;
+}

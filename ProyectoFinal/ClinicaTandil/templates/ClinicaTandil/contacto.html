@@ -25,5 +25,33 @@
                     
                 </form>
             </div>
+
+            <div>
+                <div>
+                    {% if user.is_authenticated and user.secretaria %}
+                    <h1>Consultas recibidas</h1>
+                    <table id="tableInfoPacientes">
+                        <tr id="tituloTablaPacientes">
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Correo</th>
+                            <th>Mensaje</th>
+                        </tr>
+        
+                            {% for mensaje in Mensajes %}
+                                <tr>
+                                    <td>{{mensaje.msj_fecha}}</td>
+                                    <td>{{mensaje.nombre}}</td>
+                                    <td>{{mensaje.apellido}}</td>
+                                    <td>{{mensaje.email}}</td>
+                                    <td>{{mensaje.mensaje}}</td>
+                                </tr>
+                        
+                            {% endfor %} 
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
         {% endblock %}
 </div>

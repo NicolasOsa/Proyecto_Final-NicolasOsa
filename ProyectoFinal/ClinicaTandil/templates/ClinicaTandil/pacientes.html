@@ -9,7 +9,7 @@
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Correo</th>
-                    
+                    <th>Historia clinica</th>
                 </tr>
 
                     {% for paciente in Pacientes %}
@@ -17,8 +17,9 @@
                             <td>{{paciente.usuario.first_name}}</td>
                             <td>{{paciente.usuario.last_name}}</td>
                             <td>{{paciente.usuario.email}}</td>
-                            
+                            <td><button class="btn btn-primary btnVer"><a href="{% url 'diagnostico' paciente.usuario.id %}">Ver</a></button></td>
                         </tr>
                 {% endfor %}  
+            </table>
         {% endblock %}
 </div>

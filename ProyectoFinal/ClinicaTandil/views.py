@@ -1,50 +1,64 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from ClinicaTandil.models import Mensaje, Avatar, Paciente, Medico
-from ClinicaTandil.forms import AvatarForm, UserEditForm, ChangePasswordForm
+from ClinicaTandil.models import Mensaje, Avatar, Paciente, Medico, Diagnostico
+from ClinicaTandil.forms import AvatarForm, UserEditForm, ChangePasswordForm, formDiagnostico
 from .models import User
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
 
 def base(request):
     avatar = getavatar(request)
-    return render(request, "ClinicaTandil/base.html", {"avatar": avatar})
+    es_medico = Medico.objects.filter(usuario=request.user).exists()
+    return render(request, "ClinicaTandil/base.html", {"avatar": avatar, "es_medico": es_medico})
 
 def home(request):
-    return render(request, "ClinicaTandil/home.html")
+    avatar = getavatar(request)
+    es_medico = False
+    if request.user.is_authenticated:
+        es_medico = Medico.objects.filter(usuario=request.user).exists()
+
+    return render(request, "ClinicaTandil/home.html", {"avatar": avatar, "es_medico": es_medico})
                   
 def turnos(request):
-    return render(request, "ClinicaTandil/turnos.html")
+    avatar = getavatar(request)
+    return render(request, "ClinicaTandil/turnos.html", {"avatar": avatar})
+
 
 def plantilla(request):
+    avatar = getavatar(request)
     Medicos = Medico.objects.all()
-    return render(request, "ClinicaTandil/plantilla.html", {"Medicos": Medicos})
+    return render(request, "ClinicaTandil/plantilla.html", {"Medicos": Medicos, "avatar": avatar})
 
+@login_required
 def pacientes(request):
+    avatar = getavatar(request)
+    es_medico = Medico.objects.filter(usuario=request.user).exists()
     Pacientes = Paciente.objects.all()
-    return render(request, "ClinicaTandil/pacientes.html", {"Pacientes": Pacientes})
+    return render(request, "ClinicaTandil/pacientes.html", {"Pacientes": Pacientes, "avatar": avatar, "es_medico": es_medico})
 
 def contacto(request):
+    avatar = getavatar(request)
+    Mensajes = Mensaje.objects.all()
     if request.method =='POST':
         mensaje = Mensaje(nombre=request.POST["nombre"],apellido=request.POST["apellido"], email=request.POST["email"], mensaje=request.POST["mensaje"])
         mensaje.save()   
         return render(request, "ClinicaTandil/home.html")
-
-    return render(request, "ClinicaTandil/contacto.html")
+    return render(request, "ClinicaTandil/contacto.html", {"avatar": avatar, "Mensajes":Mensajes})
 
 
 def loginWeb(request):
     if request.method == "POST":
-        
         user = authenticate(username = request.POST['user'], password = request.POST['password'])
         if user is not None:
             login(request, user)
-            return redirect("../home", {'mensaje': f"Bienbenido che"})
+            return redirect("../home", {'mensaje': f"Bienbenido a Clinica Tandil"})
         else:
             return render(request, 'ClinicaTandil/login.html', {'error': 'Usuario o contraseña incorrectos'})
     else:
@@ -57,13 +71,18 @@ def registro(request):
             user = userCreate.save()
             login(request, user)
             return redirect('Home')
+        else:
+            messages.error(request,"Las contraseñas no son validas.")
+            return render(request, 'ClinicaTandil/registro.html', {'form': userCreate})
     else:
         userCreate = UserCreationForm()
         return render(request, 'ClinicaTandil/registro.html', {'form': userCreate})
 
 @login_required
 def perfilview(request):
-    return render(request, 'ClinicaTandil/perfil/perfil.html',  {'user': request.user})
+    avatar = getavatar(request)
+    es_medico = Medico.objects.filter(usuario=request.user).exists()
+    return render(request, 'ClinicaTandil/perfil/perfil.html',  {'user': request.user, "avatar": avatar, "es_medico": es_medico})
 
 
 @login_required  
@@ -84,7 +103,7 @@ def editarPerfil(request):
         return render(request, 'ClinicaTandil/perfil/editarPerfil.html', {"form": form})
 
 
-
+@login_required
 def crear_avatar(request):
     if request.method == 'POST':
         form = AvatarForm(request.POST, request.FILES)
@@ -99,7 +118,7 @@ def crear_avatar(request):
                 avatar = avatar[0].imagen.url
             except:
                 avatar = None           
-            return render(request, "ClinicaTandil/base.html", {'avatar': avatar})
+            return render(request, "ClinicaTandil/home.html", {'avatar': avatar})
     else:
         try:
             avatar = Avatar.objects.filter(user = request.user.id)
@@ -108,6 +127,7 @@ def crear_avatar(request):
             form = AvatarForm()
     return render(request, "ClinicaTandil/perfil/avatar.html", {'form': form})
 
+@login_required
 def getavatar(request):
     avatar = Avatar.objects.filter(user = request.user.id)
     try:
@@ -126,21 +146,50 @@ def changePassword(request):
             if request.POST['new_password1'] == request.POST['new_password2']:
                 user = form.save()
                 update_session_auth_hash(request, user)
-            return HttpResponse("Las constraseñas no coinciden")
-        return render(request, "ClinicaTandil/base.html")
+                messages.success(request, "Contraseña cambiada correctamente.")
+                return redirect('perfil')
+            else:
+                messages.error(request, "Las contraseñas no coinciden.")
+        else:
+            messages.error(request, "Hubo un error al cambiar la contraseña. Por favor, intenta nuevamente.")
     else:
         form = ChangePasswordForm(user = usuario)
-        return render(request, 'ClinicaTandil/perfil/changePassword.html', {"form": form})
+    return render(request, 'ClinicaTandil/perfil/changePassword.html', {"form": form})
+
+@login_required
+def barnav_medico(request):
+    es_medico = False
+    if request.user.is_authenticated:
+        # Verificar si el usuario logueado es médico
+        es_medico = Medico.objects.filter(usuario=request.user).exists()
+
+    return render(request, 'base.html', {'es_medico': es_medico})
 
 
+@login_required
+def diagnostico(request, el_paciente):
+    avatar = getavatar(request)
+    es_medico = Medico.objects.filter(usuario=request.user).exists()
+    el_paciente = get_object_or_404(Paciente, usuario__id=el_paciente)
+    Diagnosticos = Diagnostico.objects.filter(paciente = el_paciente)
+    return render(request, "ClinicaTandil/diagnostico.html", {"Diagnosticos": Diagnosticos, "avatar": avatar, "es_medico": es_medico, "el_paciente": el_paciente})
 
-#def crear_avatar(request):
-#    if request.method == 'POST':
-#        form = AvatarForm(request.POST, request.FILES)
-#        if form.is_valid():
-#            form.save(request.user)  # Pasamos el usuario actual al formulario
-#            return redirect('Home')  # Cambia 'ruta_exitosa' a la URL a la que deseas redirigir después de guardar la información
-#    else:
-#        form = AvatarForm()
-#
-#    return render(request, 'ClinicaTandil/perfil/avatar.html', {'form': form})
+@login_required
+def agregar_diagnostico(request, el_paciente):
+    avatar = getavatar(request)
+    es_medico = Medico.objects.filter(usuario=request.user).exists()
+    el_paciente = get_object_or_404(Paciente, usuario_id=el_paciente)
+    diagnosticos_paciente = Diagnostico.objects.filter(paciente=el_paciente)
+    if request.method == 'POST':
+        form = formDiagnostico(request.POST)
+        if form.is_valid():
+            medico_actual = Medico.objects.get(usuario=request.user)
+            diagnostico_texto = form.cleaned_data['diagnostico']
+            diagnostico = Diagnostico(paciente=el_paciente, medico=medico_actual, diagnostico=diagnostico_texto)
+            diagnostico.save()
+        
+        return redirect('diagnostico', el_paciente=el_paciente.usuario.id)
+    else:
+        form = formDiagnostico()
+
+    return render(request, "ClinicaTandil/agregar_diagnostico.html", {"Diagnosticos": diagnosticos_paciente, "avatar": avatar,"es_medico": es_medico, "el_paciente": el_paciente, "form": form})
