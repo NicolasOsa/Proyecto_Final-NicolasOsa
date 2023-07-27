@@ -5,7 +5,6 @@
     {% block contenidoQueCambia %}
         <h1>Agregar diagnostico</h1>
         <form action="{% url 'agregar_diagnostico' el_paciente.usuario.id %}" method="post"> {% csrf_token %}
-            <!-- {{ form.as_p }} -->
             <div class="form-group">
                 <textarea class="form-control anchoFormContacto" placeholder="Nuevo diagnostico" type = "text" name="diagnostico" rows="8" required></textarea>
             </div>

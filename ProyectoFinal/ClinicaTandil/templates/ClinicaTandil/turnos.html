@@ -3,16 +3,33 @@
     {% load static %}
     
         {% block contenidoQueCambia %}
-        <div class="componenteEntregables">
-            <p>Hola soy un TURNO</p>
-            <div class="card" style="width: 18rem;">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
+        
+        
+        <div>
+            <title>{% block title %}Turnos{% endblock %}</title>
+            
+            <h1>Turnos</h1>
+            <div>
+                {% block content %}
+                    <ul>
+                        {% for turno in turnos %}
+                            <li>{{ turno.turno_fecha }} -Paciente: {{ turno.paciente.usuario.last_name }}, {{ turno.paciente.usuario.first_name }} - Medico: {{ turno.medico.usuario.last_name }}, {{ turno.medico.usuario.first_name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endblock %}
             </div>
         </div>
+
+        {% if user.is_authenticated and user.secretaria %}
+            <button class="btn btn-primary btnVer"><a href="{% url 'nuevo_turno'  %}">Nuevo Turno</a></button>
+            <h2>Confirmacion de nuevo turno</h2>
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
         {% endblock %}
 </div>

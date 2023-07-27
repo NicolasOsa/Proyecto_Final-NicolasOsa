@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
-from ClinicaTandil.views import base, home, turnos, plantilla, pacientes, contacto, loginWeb, registro, perfilview, editarPerfil, crear_avatar, changePassword,diagnostico, agregar_diagnostico
+from ClinicaTandil.views import base, home, turnos, plantilla, pacientes, contacto, loginWeb, registro, perfilview, editarPerfil, crear_avatar, changePassword,diagnostico, agregar_diagnostico, nuevo_turno
 
 urlpatterns = [
     path('', home, name="Home"),
@@ -19,4 +19,5 @@ urlpatterns = [
     path('perfil/changePassword/', changePassword, name="changePassword"),
     path('diagnostico/<int:el_paciente>/', diagnostico, name="diagnostico"),
     path('agregar_diagnostico/<int:el_paciente>/', agregar_diagnostico, name="agregar_diagnostico"),
+    path('nuevo_turno/', nuevo_turno, name="nuevo_turno"),
 ]

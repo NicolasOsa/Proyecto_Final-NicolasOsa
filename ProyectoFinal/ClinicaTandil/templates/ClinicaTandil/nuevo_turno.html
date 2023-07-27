@@ -1,0 +1,31 @@
+
+<div>
+    {% extends "ClinicaTandil/base.html" %}
+    {% load static %}
+
+    {% block contenidoQueCambia %}
+        <h2>Asignar Turno</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="paciente">Seleccione un paciente:</label>
+            <select name="paciente" id="paciente">
+                {% for paciente in Pacientes %}
+                    <option value="{{ paciente.usuario.id }}">{{ paciente.usuario.get_full_name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="medico">Seleccione un médico:</label>
+            <select name="medico" id="medico">
+                {% for medico in Medicos %}
+                    <option value="{{ medico.usuario.id }}">{{ medico.usuario.get_full_name }} - {{ medico.especialidad }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="fecha">Fecha y Hora del Turno:</label>
+            <input type="datetime-local" name="fecha" required>
+            <br>
+            <button type="submit">Dar Turno</button>
+        </form>
+
+    {% endblock %}
+</div>

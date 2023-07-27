@@ -1,0 +1,14 @@
+{% extends 'turnos.html' %}
+
+{% block title %}Lista de Turnos{% endblock %}
+
+{% block content %}
+    <h2>Lista de Turnos</h2>
+    <ul>
+        {% for turno in turnos %}
+        <li>
+            {{ turno.turno_fecha }} - {{ turno.paciente.usuario.last_name }}, {{ turno.paciente.usuario.first_name }}
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

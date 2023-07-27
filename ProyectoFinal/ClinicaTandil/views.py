@@ -1,13 +1,13 @@
-from django.http import HttpResponse
-from django.shortcuts import render,redirect
-from ClinicaTandil.models import Mensaje, Avatar, Paciente, Medico, Diagnostico
+from ClinicaTandil.models import Mensaje, Avatar, Paciente, Medico, Diagnostico,Turno,Secretaria
 from ClinicaTandil.forms import AvatarForm, UserEditForm, ChangePasswordForm, formDiagnostico
 from .models import User
-from django.contrib.auth.decorators import login_required
-
-from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.views.generic import ListView
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.shortcuts import get_object_or_404
 
 
@@ -26,10 +26,6 @@ def home(request):
 
     return render(request, "ClinicaTandil/home.html", {"avatar": avatar, "es_medico": es_medico})
                   
-def turnos(request):
-    avatar = getavatar(request)
-    return render(request, "ClinicaTandil/turnos.html", {"avatar": avatar})
-
 
 def plantilla(request):
     avatar = getavatar(request)
@@ -160,7 +156,6 @@ def changePassword(request):
 def barnav_medico(request):
     es_medico = False
     if request.user.is_authenticated:
-        # Verificar si el usuario logueado es médico
         es_medico = Medico.objects.filter(usuario=request.user).exists()
 
     return render(request, 'base.html', {'es_medico': es_medico})
@@ -193,3 +188,49 @@ def agregar_diagnostico(request, el_paciente):
         form = formDiagnostico()
 
     return render(request, "ClinicaTandil/agregar_diagnostico.html", {"Diagnosticos": diagnosticos_paciente, "avatar": avatar,"es_medico": es_medico, "el_paciente": el_paciente, "form": form})
+
+
+@login_required
+def nuevo_turno(request):
+    avatar = getavatar(request)
+    if request.method == 'POST':
+        paciente_id = request.POST.get('paciente')
+        medico_id = request.POST.get('medico')
+        fecha_hora = request.POST.get('fecha')
+
+        paciente = Paciente.objects.get(usuario_id=paciente_id)
+        medico = Medico.objects.get(usuario_id=medico_id)
+
+        turno = Turno.objects.create(paciente=paciente, medico=medico, turno_fecha=fecha_hora)
+        messages.success(request, f"Turno asignado para {paciente.usuario.first_name} {paciente.usuario.last_name} con el médico {medico.usuario.first_name} {medico.usuario.last_name} el {fecha_hora}.")
+
+        return redirect('Turnos')
+
+    else:
+        Pacientes = Paciente.objects.all()
+        Medicos = Medico.objects.all()
+        return render(request, 'ClinicaTandil/nuevo_turno.html', {"Pacientes": Pacientes, "Medicos": Medicos, "avatar": avatar})
+
+
+@login_required
+def turnos(request):
+    avatar = getavatar(request)
+    user = request.user
+
+    es_paciente = Paciente.objects.filter(usuario=user).exists()
+    es_medico = Medico.objects.filter(usuario = user).exists()
+    es_secretaria = Secretaria.objects.filter(usuario = user).exists()
+
+    if es_secretaria:
+        turnos = turnos = Turno.objects.all()
+    elif es_medico:
+        medico_actual = Medico.objects.get(usuario=user)
+        turnos = Turno.objects.filter(medico=medico_actual)
+    elif es_paciente:
+        paciente_actual = Paciente.objects.get(usuario=user)
+        turnos = Turno.objects.filter(paciente=paciente_actual)
+    else:
+        turnos = []
+
+    return render(request, 'ClinicaTandil/turnos.html', {'turnos': turnos, "avatar": avatar})
+    
