@@ -21,7 +21,7 @@
                         </tr>
                     {% endfor %} 
             </table> 
-            <button class="btn btn-primary btnVer"><a href="{% url 'agregar_diagnostico' el_paciente.usuario.id %}">Agregar Diagnostico</a></button>
+            <a class="btn btn-primary btnVer" href="{% url 'agregar_diagnostico' el_paciente.usuario.id %}">Agregar Diagnostico</a>
             <div class="formDiagnostico">
                 {% block agregar_diagnostico %}
                 {% endblock %}
